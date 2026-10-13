@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdbool.h>
+#include<stdlib.h>
 #include"constants.c"
 
 typedef struct cat8 cat8;
@@ -16,6 +17,28 @@ cat8 empty_cat8(){
 		m.prog[i] = 0;
 	}
 	m.pc = 0;
+	return m;
+}
+
+cat8 cat8_from_file(char *filename){
+	cat8 m;
+	FILE *fp = fopen(filename, "r");
+	byte ch;
+	bool eof = false;
+	if (fp == NULL) {
+		printf("Unable to open '%s'\n", filename);
+		exit(1);
+	}
+	for(int i = 0; i < MAX; i++)
+		m.mem[i] = 0;
+	int i = 0;
+	while ((ch = fgetc(fp)) != EOF){
+		m.prog[i] = ch;
+		i++;
+	}
+	m.prog[i] = 0;
+	m.pc = 0;
+	fclose(fp);
 	return m;
 }
 
@@ -54,7 +77,7 @@ byte run_cat8(cat8 *m, bool debug){
 }
 
 int main(void){
-	cat8 m = empty_cat8();
+	cat8 m = cat8_from_file("rom.bin");
 	printf("Hello, world!\n");
 	return 0;
 }
