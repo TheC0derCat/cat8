@@ -4,10 +4,20 @@
 
 typedef struct cat8 cat8;
 struct cat8{
-	byte mem[255];
-	byte prog[255];
+	byte mem[MAX];
+	byte prog[MAX];
 	byte pc;
 };
+
+cat8 empty_cat8(){
+	cat8 m;
+	for(int i = 0; i < MAX; i++){
+		m.mem[i] = 0;
+		m.prog[i] = 0;
+	}
+	m.pc = 0;
+	return m;
+}
 
 int step_cat8(cat8 *m){
 	byte A = m->prog[m->pc + 1];
@@ -31,14 +41,20 @@ int step_cat8(cat8 *m){
 	return 1;
 }
 
-byte run_cat8(cat8 m, bool debug){
+byte run_cat8(cat8 *m, bool debug){
 	int running = 1;
 	while(running) {
-		running = step_cat8(&m);
+		running = step_cat8(m);
+		if(debug){
+			for(int i = 0; i < 10; i++){
+				printf("%d", m->mem[i]);
+			}
+		}
 	}
 }
 
 int main(void){
+	cat8 m = empty_cat8();
 	printf("Hello, world!\n");
 	return 0;
 }
